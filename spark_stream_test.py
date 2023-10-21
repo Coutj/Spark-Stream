@@ -1,6 +1,9 @@
 from pyspark.sql import SparkSession
-from pyspark.streaming import StreamingContext
-import time
+from pyspark.sql.functions import udf
+
+@udf
+def add_word(w):
+    return f"Word {w}"
 
 
 spark = SparkSession \
@@ -21,6 +24,7 @@ df = (
     )
 
 df = df.selectExpr("CAST(value AS STRING)")
+df = df.select(add_word("value"))
 
 (
     df
